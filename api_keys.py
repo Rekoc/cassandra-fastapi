@@ -17,8 +17,6 @@ API_KEY = os.getenv('API_KEY')
 API_KEY_NAME = os.getenv('API_KEY_NAME')
 COOKIE_DOMAIN = os.getenv('COOKIE_DOMAIN')
 
-print(API_KEY, API_KEY_NAME, COOKIE_DOMAIN)
-
 api_key_query = APIKeyQuery(name=API_KEY_NAME, auto_error=False)
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 api_key_cookie = APIKeyCookie(name=API_KEY_NAME, auto_error=False)
