@@ -1,5 +1,8 @@
 from fastapi import Security
+from fastapi import HTTPException
 from fastapi.security.api_key import APIKeyQuery, APIKeyCookie, APIKeyHeader
+
+from starlette import status
 
 
 # API keys
