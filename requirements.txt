@@ -12,3 +12,6 @@ geomet>=0.2.1.post1
 cassandra-driver>=3.25.0
 thrift>=0.13.0
 cql>=1.4.0
+
+# Python modules
+python-dotenv>=0.17.0

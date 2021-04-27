@@ -4,11 +4,20 @@ from fastapi.security.api_key import APIKeyQuery, APIKeyCookie, APIKeyHeader
 
 from starlette import status
 
+from dotenv import load_dotenv
+
+import os
+
+PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
+# Load the env variables in .env
+load_dotenv(os.path.join(PROJECT_DIR, '.env'))
 
 # API keys
-API_KEY = "1234567asdfgh"
-API_KEY_NAME = "access_token"
-COOKIE_DOMAIN = "localtest.me"
+API_KEY = os.getenv('API_KEY')
+API_KEY_NAME = os.getenv('API_KEY_NAME')
+COOKIE_DOMAIN = os.getenv('COOKIE_DOMAIN')
+
+print(API_KEY, API_KEY_NAME, COOKIE_DOMAIN)
 
 api_key_query = APIKeyQuery(name=API_KEY_NAME, auto_error=False)
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
