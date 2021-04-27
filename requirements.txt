@@ -1,12 +1,14 @@
 # FastAPI
-typing-extensions==3.7.4.3
-starlette==0.13.6
-pydantic==1.8.1
-fastapi==0.63.0
+typing-extensions>=3.7.4.3
+starlette>=0.13.6
+pydantic>=1.8.1
+fastapi>=0.63.0
 # Uvicorn
-uvicorn==0.13.4
-h11==0.12.0
-click==7.1.2
-# Cassandra
-geomet==0.2.1.post1
-cassandra-driver==3.25.0
+uvicorn>=0.13.4
+h11>=0.12.0
+click>=7.1.2
+# Cassandra 3.11.9_1
+geomet>=0.2.1.post1
+cassandra-driver>=3.25.0
+thrift>=0.13.0
+cql>=1.4.0
