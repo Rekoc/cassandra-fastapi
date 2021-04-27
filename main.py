@@ -14,7 +14,7 @@ from cassandra.cluster import Cluster
 # Cassandra init
 # 127.0.0.1
 cluster = Cluster()
-session = cluster.connect('data')
+session = cluster.connect('data') # 'data' is the database name
 # session.set_keyspace('users')
 
 app = FastAPI()
