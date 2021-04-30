@@ -13,7 +13,8 @@ PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(PROJECT_DIR, '.env'))
 
 # API keys
-API_KEY = os.getenv('API_KEY')
+LIST_API_KEY = os.getenv('LIST_API_KEY').split(' ')
+print(LIST_API_KEY)
 API_KEY_NAME = os.getenv('API_KEY_NAME')
 COOKIE_DOMAIN = os.getenv('COOKIE_DOMAIN')
 
@@ -24,11 +25,11 @@ api_key_cookie = APIKeyCookie(name=API_KEY_NAME, auto_error=False)
 async def get_api_key(api_key_query: str = Security(api_key_query),
                       api_key_header: str = Security(api_key_header),
                       api_key_cookie: str = Security(api_key_cookie)):
-    if api_key_query == API_KEY:
+    if api_key_query in LIST_API_KEY:
         return api_key_query
-    elif api_key_header == API_KEY:
+    elif api_key_header in LIST_API_KEY:
         return api_key_header
-    elif api_key_cookie == API_KEY:
+    elif api_key_cookie in LIST_API_KEY:
         return api_key_cookie
     else:
         raise HTTPException(
