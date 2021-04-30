@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from fastapi import Security, Depends, FastAPI, HTTPException
 from fastapi.security.api_key import APIKey
@@ -47,16 +47,17 @@ async def get_models(table: str,
     Return all models
     """
     rows = session.execute("SELECT * FROM {};".format(table))
-    data = {}
+    data = {'items': {}}
     for row in rows:
-        data[row.id] = row.value
+        data['items'][row.id] = row.value
+    data['count'] = len(data['items'])
     return JSONResponse(
         data,
         status_code=status.HTTP_200_OK
     )
 
 @app.post("/model/{table}")
-def post_model(table: str, item: MyModel,
+async def post_model(table: str, item: MyModel,
                api_key: APIKey = Depends(get_api_key)):
     """
     Add a new model in the table
@@ -70,7 +71,7 @@ def post_model(table: str, item: MyModel,
     )
 
 @app.put("/model/{table}")
-def put_model(table: str, item: MyModel,
+async def put_model(table: str, item: MyModel,
               api_key: APIKey = Depends(get_api_key)):
     """
     Update model in the table
@@ -89,7 +90,7 @@ def put_model(table: str, item: MyModel,
 
 # /model/{table}?id=xxxxxxxxxx
 @app.delete("/model/{table}")
-def delete_model(table: str, id: str,
+async def delete_model(table: str, id: str,
                  api_key: APIKey = Depends(get_api_key)):
     """
     Delete model from the table
@@ -102,5 +103,29 @@ def delete_model(table: str, id: str,
     # can be --> WHERE id IN (xxxxxxxxxxxxxxx, xxxxxxxxxxxxxxx);
     return JSONResponse(
         {'detail': "model has been deleted"},
+        status_code=status.HTTP_200_OK
+    )
+
+def generate_insert_cql(table: str, item: MyModel):
+    return "INSERT INTO {} (id, value) VALUES ({}, {});\n".format(table, item.id, item.value)
+
+@app.post("/models/{table}")
+async def batch_post_model(table: str, items: List[MyModel],
+                     api_key: APIKey = Depends(get_api_key)):
+    """
+    Add many new models in the table
+    """
+    cmd = ""
+    for item in items:
+        cmd += generate_insert_cql(table, item)
+    returned_value = session.execute(
+        """
+        BEGIN BATCH
+            {}
+        APPLY BATCH;
+        """.format(cmd)
+    )
+    return JSONResponse(
+        {'detail': "models have been added"},
         status_code=status.HTTP_200_OK
     )
