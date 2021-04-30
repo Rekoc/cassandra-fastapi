@@ -14,7 +14,6 @@ load_dotenv(os.path.join(PROJECT_DIR, '.env'))
 
 # API keys
 LIST_API_KEY = os.getenv('LIST_API_KEY').split(' ')
-print(LIST_API_KEY)
 API_KEY_NAME = os.getenv('API_KEY_NAME')
 COOKIE_DOMAIN = os.getenv('COOKIE_DOMAIN')
 

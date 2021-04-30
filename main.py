@@ -46,7 +46,7 @@ async def get_models(table: str,
     """
     Return all models
     """
-    rows = session.execute("SELECT * FROM {}".format(table))
+    rows = session.execute("SELECT * FROM {};".format(table))
     data = {}
     for row in rows:
         data[row.id] = row.value
@@ -56,14 +56,51 @@ async def get_models(table: str,
     )
 
 @app.post("/model/{table}")
-def post_model(table: str, item: MyModel):
+def post_model(table: str, item: MyModel,
+               api_key: APIKey = Depends(get_api_key)):
     """
     Add a new model in the table
     """
     returned_value = session.execute(
-        "INSERT INTO {} (id, value) VALUES ({}, {})".format(table, item.id, item.value)
+        "INSERT INTO {} (id, value) VALUES ({}, {});".format(table, item.id, item.value)
     )
     return JSONResponse(
         {'detail': "model has been added"},
+        status_code=status.HTTP_200_OK
+    )
+
+@app.put("/model/{table}")
+def put_model(table: str, item: MyModel,
+              api_key: APIKey = Depends(get_api_key)):
+    """
+    Update model in the table
+    """
+    returned_value = session.execute(
+        """
+        UPDATE {}
+        SET value = {}
+        WHERE id = {};
+        """.format(table, item.value, item.id)
+    )
+    return JSONResponse(
+        {'detail': "model has been updated"},
+        status_code=status.HTTP_200_OK
+    )
+
+# /model/{table}?id=xxxxxxxxxx
+@app.delete("/model/{table}")
+def delete_model(table: str, id: str,
+                 api_key: APIKey = Depends(get_api_key)):
+    """
+    Delete model from the table
+    """
+    returned_value = session.execute(
+        """
+        DELETE FROM {} WHERE id = {};
+        """.format(table, id)
+    )
+    # can be --> WHERE id IN (xxxxxxxxxxxxxxx, xxxxxxxxxxxxxxx);
+    return JSONResponse(
+        {'detail': "model has been deleted"},
         status_code=status.HTTP_200_OK
     )
